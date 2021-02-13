@@ -5,8 +5,10 @@ const app = express();
 let conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '122f059e0f10a01039885e66c7b60fb5d32b049153f48f89',
-    database: 'ruay'
+    password: '',
+    database: 'test'
+    // password: '122f059e0f10a01039885e66c7b60fb5d32b049153f48f89',
+    // database: 'ruay'
 });
 conn.connect();
 
@@ -31,7 +33,7 @@ app.get('/user/userID/:userID', (req, res) => {
     var sql = "SELECT u.user_username, u.user_password, u.user_banknumber, w.wallet_balance FROM tb_user u, tb_wallet w WHERE u.user_userId = ?";
     conn.query(sql, [userID], (err, rows, fields) => {
         console.log("success!");
-        res.json(rows);
+        res.json(rows[0]);
     })
 })
 
@@ -42,7 +44,7 @@ app.get('/user/id/:id', (req, res) => {
     var sql = "SELECT u.user_username, u.user_password, u.user_banknumber, w.wallet_balance FROM tb_user u, tb_wallet w WHERE u.user_id = ?";
     conn.query(sql, [id], (err, rows, fields) => {
         console.log("success!");
-        res.json(rows);
+        res.json(rows[0]);
     })
 })
 
@@ -53,7 +55,7 @@ app.get('/user/username/:username', (req, res) => {
     var sql = "SELECT u.user_username, u.user_password, u.user_banknumber, w.wallet_balance FROM tb_user u, tb_wallet w WHERE u.user_username = ?";
     conn.query(sql, [username], (err, rows, fields) => {
         console.log("success!");
-        res.json(rows);
+        res.json(rows[0]);
     })
 })
 
