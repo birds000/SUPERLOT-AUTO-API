@@ -96,6 +96,6 @@ app.get('/wallet/userID/:userID', (req, res) => {
 // ---------------------------- END WALLET ----------------------- //
 
 
-app.listen(3000, () => {
-    console.log('Start server at port 3000.')
+app.listen(8080, () => {
+    console.log('Start server at port 8080.')
 })
