@@ -11,7 +11,7 @@ let conn = mysql.createConnection({
 conn.connect();
 
 app.get('/', (req, res) => {
-    res.send('Welcom To API Ruay')
+    res.send('Welcome To API Ruay')
 })
 
 // user/userID/:user_id ดึงข้อมูล user_ID ที่ระบุ
