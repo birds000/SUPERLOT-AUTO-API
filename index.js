@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 app.get('/user/userID/:userID', (req, res) => {
     console.log("Fething userID with..." + req.params.userID)
     var userID = req.params.userID;
-    var sql = `SELECT u.user_username, u.user_password, u.user_banknumber, b.bank_name_eg, b.bank_name_th, w.wallet_balance 
+    var sql = `SELECT u.user_username, u.user_password, u.user_phone, u.user_banknumber, b.bank_name_eg, b.bank_name_th, w.wallet_balance 
                 FROM tb_user u, tb_wallet w, tb_bank b 
                 WHERE u.user_bank_id = b.bank_id AND u.user_id = w.user_id AND u.user_userId = ?`;
     conn.query(sql, [userID], (err, rows, fields) => {
