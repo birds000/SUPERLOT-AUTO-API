@@ -2,7 +2,7 @@ const axios = require('axios');
 const { SCB_API } = require('../../util/connectSCB');
 const { DateNowYMD } = require('../../util/formatDate')
 
-async function Tansaction(apiAuth) {
+async function Transaction(apiAuth) {
     var dateNow = DateNowYMD() 
     var data = JSON.stringify({ 
         "accountNo": "4094138047",  
@@ -37,4 +37,4 @@ async function Tansaction(apiAuth) {
     }
 }
 
-module.exports = { Tansaction };
+module.exports = { Transaction };
