@@ -13,7 +13,7 @@ function UserAll(callback) {
 }
 
 function UserFindByUserid(userid, callback) {
-    var sql = `SELECT * FROM tb_user u, tb_bank b WHERE u.user_bank_id = b.bank_id AND u.user_userid = ?`;
+    var sql = `SELECT * FROM tb_user u, tb_bank b, tb_wallet w WHERE u.user_bank_id = b.bank_id AND u.user_id = w.user_id AND u.user_userid = ?`;
     
     conn.query(sql, [userid], (err, result) => {
         if (err) {
