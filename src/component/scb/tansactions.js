@@ -1,14 +1,18 @@
 const axios = require('axios');
 const { SCB_API } = require('../../util/connectSCB');
+const { DateNowYMD } = require('../../util/formatDate')
 
-async function loginRefresh(apiAuth) {
+async function Tansaction(apiAuth) {
+    var dateNow = DateNowYMD() 
     var data = JSON.stringify({ 
-        "accountNo": "4094138047", 
-        "endDate": "2021-03-03", 
+        "accountNo": "4094138047",  
         "pageNumber": "1", 
         "pageSize": 20, 
         "productType": "2", 
-        "startDate": "2021-03-03" 
+        "startDate": "2021-03-03", 
+        "endDate": "2021-03-03", 
+        // "startDate": dateNow
+        // "endDate": dateNow,
     });
     var config = {
         method: 'post',
@@ -33,4 +37,4 @@ async function loginRefresh(apiAuth) {
     }
 }
 
-module.exports = { loginRefresh };
+module.exports = { Tansaction };

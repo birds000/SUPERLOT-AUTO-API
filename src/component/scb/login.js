@@ -3,7 +3,7 @@
 const axios = require('axios');
 const { SCB_API, API_REFRESH, DEVICEID } = require('../../util/connectSCB');
 
-async function loginRefresh() {
+async function LoginRefresh() {
     var data = JSON.stringify({ "deviceId": DEVICEID });
     var config = {
         method: 'post',
@@ -28,4 +28,4 @@ async function loginRefresh() {
     }
 }
 
-module.exports = { loginRefresh };
+module.exports = { LoginRefresh };

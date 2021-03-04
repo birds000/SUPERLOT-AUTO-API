@@ -28,6 +28,7 @@ app.use(session({
 
 // HOME
 app.get('/', HOME)
+app.get('/bank/all/callbank', HOME)
 app.get('/param/:param', HOME)
 
 // LINE BOT

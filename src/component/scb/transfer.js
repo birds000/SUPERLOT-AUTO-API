@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { SCB_API, ACCOUNT_FROM, ACCOUNT_FROMTYPE, TRANSFER_TYPE } = require('../../util/connectSCB');
 
-async function verification(apiAuth, accountTo, accountToBankCode, amount) {
+async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
     var data = JSON.stringify({
         "accountFrom": "4094138047",
         "accountFromType": "2",
@@ -35,7 +35,7 @@ async function verification(apiAuth, accountTo, accountToBankCode, amount) {
 
 }
 
-async function confirmation(apiAuth, accountFromName, accountTo, accountToBankCode, accountToName, amount, pccTraceNo, sequence, terminalNo, transactionToken) {
+async function Confirmation(apiAuth, accountFromName, accountTo, accountToBankCode, accountToName, amount, pccTraceNo, sequence, terminalNo, transactionToken) {
     var axios = require('axios');
     var data = JSON.stringify({
         "accountFrom": ACCOUNT_FROM, // กำนหด บัญชีที่โอน
@@ -81,4 +81,4 @@ async function confirmation(apiAuth, accountFromName, accountTo, accountToBankCo
 
 }
 
-module.exports = { verification, confirmation };
+module.exports = { Verification, Confirmation };
