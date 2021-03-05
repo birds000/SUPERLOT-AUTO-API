@@ -18,8 +18,7 @@ function UserFindByUserid(userID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify(result[0]);
-            callback(null, data);
+            callback(null, result[0]);
         }
     })
 }
