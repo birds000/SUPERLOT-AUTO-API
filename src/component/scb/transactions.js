@@ -9,10 +9,10 @@ async function Transaction(apiAuth) {
         "pageNumber": "1", 
         "pageSize": 20, 
         "productType": "2", 
-        "startDate": "2021-03-03", 
-        "endDate": "2021-03-03", 
-        // "startDate": dateNow
-        // "endDate": dateNow,
+        // "startDate": "2021-02-28", 
+        // "endDate": "2021-02-28", 
+        "startDate": dateNow,
+        "endDate": dateNow,
     });
     var config = {
         method: 'post',

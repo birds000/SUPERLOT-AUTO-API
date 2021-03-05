@@ -49,7 +49,8 @@ app.get('/scb/add/eligiblebanks', UPDATE_BANK)
 
 
 // Transaction
-app.post(`${API_V1}/transaction/withdraw`, TRANSACTIONS_WITHDRAW)
+app.post(`${API_V1}/transaction/withdraw`, TRANSACTIONS_WITHDRAW) 
+app.post(`${API_V1}/transaction/deposit`, TRANSACTIONS_DEPOSIT)
 
 app.listen(PORT, () => {
     console.log('Start server at port '+ PORT)

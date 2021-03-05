@@ -14,8 +14,8 @@ function WalletAll(callback) {
 
 // เติมเงิน
 function WalletTopup(amount, userID, callback) {
-    var sql = `UPDATE tb_wallet SET wallet_balance = ? WHERE wallet_id = ?`;
-    conn.query(sql, [amount, userID], (err, result) => {
+    var sql = `UPDATE tb_wallet SET wallet_balance = ((SELECT wallet_balance FROM tb_wallet WHERE user_id = ?) + ?) WHERE user_id = ?`;
+    conn.query(sql, [userID, amount, userID], (err, result) => {
         if (err) {
             callback(err, null);
         } else {

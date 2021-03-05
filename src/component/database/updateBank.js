@@ -104,12 +104,13 @@ routes.get('/scb/add/eligiblebanks', (req, res) => {
             const result = JSON.parse(body);
             const data = result.data
             for (let index = 1; index < data.length; index++) {
-                var bank_name_en = data[i].bankNameEn;
-                var bank_name_th = data[i].bankNameTh;
-                var bank_code = data[i].bankCode;
-                var bank_abbrev_en = data[i].bankAbbrevEn;
-                var sql = `INSERT INTO tb_bank(bank_id, bank_name_en, bank_name_th, bank_abbrev_en) VALUES (?, ?, ?, ?)`;
-                conn.query(sql, [bank_code, bank_name_en, bank_name_th, bank_abbrev_en], (err, result) => {
+                var bank_name_en = data[index].bankNameEn;
+                var bank_name_th = data[index].bankNameTh;
+                var bank_code = data[index].bankCode;
+                var bank_abbrev_en = data[index].bankAbbrevEn;
+                var bank_abbrev_th = data[index].bankAbbrevTh;
+                var sql = `INSERT INTO tb_bank(bank_id, bank_name_en, bank_name_th, bank_abbrev_en, bank_abbrev_th) VALUES (?, ?, ?, ?, ?)`;
+                conn.query(sql, [bank_code, bank_name_en, bank_name_th, bank_abbrev_en, bank_abbrev_th], (err, result) => {
                     if (err) {
                         console.log(err)
                         res.json({ status: "fail", massage: err })
