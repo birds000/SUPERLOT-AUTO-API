@@ -1,96 +1,121 @@
 const routes = require('express').Router();
-const conn = require('../../util/connectDB');
+const { UserAll, UserUpdate, UserAdd, UserFindByUserid } = require('../../sql/user')
+const { LoginRefresh } = require('../scb/login');
+const { Verification } = require('../scb/transfer');
 
 // user/userID/:user_id ดึงข้อมูล user_ID ที่ระบุ
 routes.get('/user/userID/:userID', (req, res) => {
     console.log("Fething userID with..." + req.params.userID)
-    var userID = req.params.userID;
-    var sql = `SELECT u.user_username, u.user_password, u.user_phone, u.user_bank_id, u.user_banknumber, b.bank_name_eg, b.bank_name_th, w.wallet_balance 
-                FROM tb_user u, tb_wallet w, tb_bank b 
-                WHERE u.user_bank_id = b.bank_id AND u.user_id = w.user_id AND u.user_userId = ?`;
-    conn.query(sql, [userID], (err, result) => {
-        if (err) {
-            console.log(err)
-            res.json({ status: "fail", message: err });    
-        } else {
-            res.json({ result, status: "success" });    
-        }
-    })
+    const param_userID = req.params.userID
+
+    const error = { status: "fail", message: "ไม่สามารถค้นหาสมาชิกได้" }
+
+    if (param_userID) {
+        UserFindByUserid(param_userID, async function (err, data) {
+            if (err) {
+                res.json(error)
+            } else {
+                res.json({ result: JSON.parse(data), status: "success" });
+            }
+        })
+    } else { // error NO BODY
+        res.json(error)
+    }
 });
 
 // UPDATE แก้ไขข้อมูลผู็เล่น
 routes.post('/user/update', (req, res) => {
-    var userID = req.body.userID;
-    var bankID = req.body.bankID;
-    var bankNumber = req.body.bankNumber;
-    var telphone = req.body.telphone;
+    const body_userID = req.body.userID;
+    const body_bankID = req.body.bankID;
+    const body_bankNumber = req.body.bankNumber;
+    const body_telphone = req.body.telphone;
 
-    var sql = `UPDATE tb_user SET user_bank_id = ?, user_banknumber = ?, user_phone = ? WHERE user_userId = ?`;
-    conn.query(sql, [bankID, bankNumber, telphone, userID], (err, result) => {
-        if (err) {
-            console.log(err)
-            res.json({ status: "fail", message: err });    
-        } else {
-            res.json({ result, status: "success", message: "แก้ไขข้อมูลเสร็จสิ้น" });    
-        }
-    })
+    const error = { status: "fail", message: "ไม่สามารถแก้ไขข้อมูลสมาชิกได้" }
+
+    if (body_userID && body_bankID && body_bankNumber && body_telphone) {
+        UserUpdate(body_bankID, body_bankNumber, body_telphone, body_userID, async function (err, data) {
+            if (err) {
+                res.json(error)
+            } else {
+                res.json({ result: JSON.parse(data), status: "success", message: "แก้ไขข้อมูลเสร็จสิ้น!!" });
+            }
+        })
+    } else { // error NO BODY
+        res.json(error)
+    }
 })
 
 // ADD เพิ่มผู้เล่น
-routes.post('/user/add', (req, res) => {
-    var userID = req.body.userID;
-    var bankID = req.body.bankID;
-    var bankNumber = req.body.bankNumber;
-    var telphone = req.body.telphone;
+routes.post('/user/add', async (req, res) => {
+    console.log('/user/add')
+    const body_userID = req.body.userID;
+    const body_bankID = req.body.bankID;
+    const body_bankNumber = req.body.bankNumber;
+    const body_telphone = req.body.telphone;
+
+    const error = { status: "fail", message: "ไม่สามารถเพิ่มสมาชิกได้" }
+
+    if (body_userID && body_bankID && body_bankNumber && body_telphone) {
+        UserAll(async function (err, data_user) {
+            if (data_user) {
+                // console.log(data)
+                const res_user = JSON.parse(data_user).result
     
-    var sql_selcet =`SELECT user_userId FROM tb_user WHERE user_userId = ?`;
-    conn.query(sql_selcet, [userID], (err, result) => {
-        if (err) {
-            console.log(err)
-            res.json({ status: "fail", message: err });    
-        } else {
-            if ( result.length == 1 ) {
-                console.log("มีผู้ใช้แล้ว!!");
-                res.json({ status: "fail", message: "มีผู้ใช้แล้ว", result })
-            } else {
-                var sql_insert_user = `INSERT INTO tb_user (user_userId, user_username, user_password, user_bank_id, user_banknumber, user_phone) 
-                    VALUES (?, 
-                    (SELECT 
-                        concat(
-                            char(round(rand()*25)+65),
-                            char(round(rand()*25)+65),
-                            round(rand()*25)+65,
-                            round(rand()*25)+65
-                        ) AS random
-                    ),
-                    (SELECT 
-                        concat(
-                            char(round(rand()*25)+65),
-                            char(round(rand()*25)+65),
-                            round(rand()*25)+65,
-                            round(rand()*25)+65
-                        ) AS random
-                    ), 
-                    ?, ?, ?)`;
-                conn.query(sql_insert_user, [userID, bankID, bankNumber, telphone], (err, result) => {
-                    if (err) {
-                        console.log(err);
-                        res.json({ status: "fail", message: err });    
-                    } else {
-                        var lastID = result.insertId;
-                        var sql_insert_wallet = `INSERT INTO tb_wallet(wallet_balance, user_id) VALUES (0, ?)`; 
-                        conn.query(sql_insert_wallet, [lastID], (err, result) => {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                res.json({ status: "success", message: "เพิ่มข้อมูลเรียบร้อย" });
-                            }
-                        })
+                var status_user = true
+                res_user.forEach(item => {
+                    if (item.user_userId == body_userID) {
+                        status_user = false
                     }
-                })
+                });
+    
+                if (status_user) { // ไม่มีชื่อผู้ใช้ในระบบ (สมัครได้)
+                    // SCB login
+                    const access_token = JSON.parse(await LoginRefresh()).data.access_token;
+                    if (access_token) {
+    
+                        // SCB verification สร้างบิล
+                        const res_verification = JSON.parse(await Verification(access_token, body_bankNumber, body_bankID, '1'))
+                        console.log(res_verification)
+                        if (res_verification.status.code == "1000") { // verification สำเร็จ
+                            const data_v = res_verification.data
+    
+                            console.log(data_v)
+                            UserAdd(body_userID, data_v.accountToName, body_telphone, data_v.accountTo, data_v.accountToBankCode, function (err, data) {
+                                if (err) { // error SQL 
+                                    res.json({ result: err })
+                                } else { // success ทำรายการถอนสำเร็จ 
+                                    res.json({ result: JSON.parse(data), message: "สมัครสมาชิกเสร็จสิ้น!!", status: "success" })
+                                    console.log("สมัครสมาชิกเสร็จสิ้น!!")
+                                }
+                            });
+    
+                        } else if (res_verification.status.code == "5009") { // error เลขที่บัญชีรับเงินไม่ถูกต้อง
+                            console.log("error เลขที่บัญชีรับเงินไม่ถูกต้อง")
+                            res.json({ result: res_verification, error: error })
+    
+                        } else { // error Verification
+                            console.log("error Verification")
+                            res.json(error)
+                        }
+    
+                    } else { // error LOGIN SCB
+                        console.log("error LOGIN SCB")
+                        res.json(error)
+                    }
+                } else { // error มีข้อมูล USER แล้ว
+                    console.log("error มีข้อมูล USER แล้ว")
+                    res.json(error)
+                }
+    
+            } else { // error SQL USER ALL
+                res.json({ result: err })
             }
-        }
-    })
+        });
+
+    } else { // error NO BODY
+        res.json(error)
+    }
+   
 })
 
 module.exports = routes;

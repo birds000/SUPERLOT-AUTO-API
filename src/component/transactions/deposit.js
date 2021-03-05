@@ -67,10 +67,10 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                                                 WalletTopup(body_amount, userid, async function (err, data) {
                                                     if (err) { // error SQL WALLET 
                                                         console.log("error SQL WALLET")
-                                                        res.json({ result: err, error: error })
+                                                        res.json({ result: err, error: error, status: "fail" })
                                                     } else {
                                                         console.log("ทำรายการถอนเงินเสร็จสิ้น")
-                                                        res.json({ status: "success", message: "ทำรายการเติมเงินเสร็จสิ้น!", userID: body_userID, amount: body_amount })
+                                                        res.json({ status: "success", message: "ทำรายการเติมเงินเสร็จสิ้น!", userID: body_userID, amount: body_amount, status: "success" })
                                                     }
                                                 })
 
@@ -85,7 +85,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                                     }
 
                                 } else { // error SQL transaction
-                                    res.json({ result: err, error: error })
+                                    res.json({ result: err, error: error, status: "fail" })
                                 }
                             })
 
@@ -105,7 +105,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                 }
 
             } else { // error SQL USER FIND BY USERID
-                res.json({ result: err, error: error })
+                res.json({ result: err, error: error, status: "fail" })
             }
         })
 
