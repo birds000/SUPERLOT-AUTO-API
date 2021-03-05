@@ -15,7 +15,8 @@ routes.get('/user/userID/:userID', (req, res) => {
             if (err) {
                 res.json(error)
             } else {
-                res.json({ result: JSON.parse(data), status: "success" });
+                var result = JSON.parse(data)
+                res.json({ result, status: "success" });
             }
         })
     } else { // error NO BODY
@@ -37,7 +38,8 @@ routes.post('/user/update', (req, res) => {
             if (err) {
                 res.json(error)
             } else {
-                res.json({ result: JSON.parse(data), status: "success", message: "แก้ไขข้อมูลเสร็จสิ้น!!" });
+                var result = JSON.parse(data)
+                res.json({ result, status: "success", message: "แก้ไขข้อมูลเสร็จสิ้น!!" });
             }
         })
     } else { // error NO BODY
@@ -84,7 +86,8 @@ routes.post('/user/add', async (req, res) => {
                                 if (err) { // error SQL 
                                     res.json({ result: err })
                                 } else { // success ทำรายการถอนสำเร็จ 
-                                    res.json({ result: JSON.parse(data), message: "สมัครสมาชิกเสร็จสิ้น!!", status: "success" })
+                                    var result = JSON.parse(data)
+                                    res.json({ result, message: "สมัครสมาชิกเสร็จสิ้น!!", status: "success" })
                                     console.log("สมัครสมาชิกเสร็จสิ้น!!")
                                 }
                             });
