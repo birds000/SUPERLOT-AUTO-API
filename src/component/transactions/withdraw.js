@@ -5,6 +5,7 @@ const { Verification, Confirmation } = require('../scb/transfer');
 const { TransactionAdd } = require('../../sql/transaction')
 const { UserFindByUserid } = require('../../sql/user')
 
+// ถอน
 routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
     // req.body
     const body_userID = req.body.userID

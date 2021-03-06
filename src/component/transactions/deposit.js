@@ -9,13 +9,14 @@ const { UserFindByUserid } = require('../../sql/user')
 const tranfer = "รับโอนจาก";
 const prompay = "PromptPay";
 
+// ฝาก
 routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
     // req.body
     const body_userID = req.body.userID
 
     const error = { status: "fail", message: "ไม่สามารถทำรายการฝากเงินได้" }
     const error5001 = { status: "fail", message: "ไม่สามารถทำรายการฝากเงินได้ \nไม่พบประวัติการฝากเงินเข้าระบบ" }
-    const error5002 = { status: "fail", message: "ทางระบบได้ถอนเงินเข้าบัญชีท่านแล้ว \nกรุณาตรวจสอบประวัติการโอนเงินในบัญชีของท่าน" }
+    const error5002 = { status: "fail", message: "ทางระบบได้เติมเงินเข้าบัญชีท่านแล้ว \nกรุณาตรวจสอบโดยการกด 'เช็คยอด'" }
 
     if (body_userID) { // ตรวจสอบ REQUES BODY
         // ค้นหาข้อมูลสมาชิก SELECT tb_user
