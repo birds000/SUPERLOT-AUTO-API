@@ -17,7 +17,12 @@ function UserFindByUserid(userID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            callback(null, result[0]);
+            if (result.length == 0) {
+                callback(null, { message: "ไม่พบข้อมูลผู้ใช้", status: "fail"});
+            } else {
+                callback(null, result[0]);
+            } 
+            
         }
     })
 }

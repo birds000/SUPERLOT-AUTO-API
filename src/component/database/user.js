@@ -15,7 +15,7 @@ routes.get('/user/userID/:userID', (req, res) => {
             if (err) {
                 res.json(error)
             } else {
-                res.json({ result: data });
+                res.json({ result: data, status: "success" });
             }
         })
     } else { // error NO BODY
