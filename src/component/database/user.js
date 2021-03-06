@@ -58,11 +58,8 @@ routes.post('/user/add', async (req, res) => {
     if (body_userID && body_bankID && body_bankNumber && body_telphone) {
         UserAll(async function (err, data_user) {
             if (data_user) {
-                // console.log(data)
-                const res_user = JSON.parse(data_user).result
-    
                 var status_user = true
-                res_user.forEach(item => {
+                data_user.forEach(item => {
                     if (item.user_userId == body_userID) {
                         status_user = false
                     }

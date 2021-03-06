@@ -10,25 +10,21 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
     // req.body
     const body_userID = req.body.userID
     const body_amount = req.body.amount
-    const body_accountTo = req.body.accountTo
-    const body_accountToBankCode = req.body.accountToBankCode
 
     const error = { status: "fail", message: "ไม่สามารถทำรายการถอนเงินได้" }
     const error1001 = { status: "fail", message: "จำนวนเงินไม่เพียงพอ ไม่สามารถทำรายการถอนเงินได้" }
 
-    if (body_userID && body_amount && body_accountTo && body_accountToBankCode) { // ตรวจสอบ REQUES BODY
+    if (body_userID && body_amount) { // ตรวจสอบ REQUES BODY
         // ค้นหาข้อมูลสมาชิก SELECT tb_user
-        UserFindByUserid(body_userID, async function (err, user_data) {
-            if (user_data) {
-                const result = JSON.parse(user_data).result[0]
+        UserFindByUserid(body_userID, async function (err, result) {
+            if (result) {
                 var userid = result.user_id
                 var bankNumber = result.user_banknumber.substr(-4) // str.substr(-4); ตัดข้อความเหลือ 4 ตัวสุดท้าย
                 var remark = `โอนไป ${result.bank_abbrev_en} x${bankNumber} ${result.user_name}` // remark = "โอนไป BBL x6178 น.ส. ปราวีณา บุญมา"
 
                 if (parseFloat(body_amount) <= parseFloat(result.wallet_balance)) { //ตรวจสอบจำนวนเงิน <= จำนวนเงินในกระเป๋า tb_wallet
-                    TransactionWithdrawFindByUUID(body_userID, async function (err, transaction_data) { // ตรวจสอบประวัติการโอนเงิน DB tb_transaction
-                        if (transaction_data) {
-                            const transaction_result = JSON.parse(transaction_data).result
+                    TransactionWithdrawFindByUUID(body_userID, async function (err, transaction_result) { // ตรวจสอบประวัติการโอนเงิน DB tb_transaction
+                        if (transaction_result) {
 
                             // SCB login
                             const access_token = JSON.parse(await LoginRefresh()).data.access_token;
@@ -62,13 +58,14 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
 
                                 if (status_transaction) { // ไม่มีประวัติการถอน||ซ้ำ (สามารถถอนเงินได้)
                                     // SCB verification สร้างบิล
-                                    const res_verification = JSON.parse(await Verification(access_token, body_accountTo, body_accountToBankCode, body_amount))
+                                    const res_verification = JSON.parse(await Verification(access_token, result.user_banknumber, result.bank_id, body_amount))
 
                                     if (res_verification.status.code == "1000") { // verification สำเร็จ
                                         const data_v = res_verification.data
 
+                                        res.json({ status: "success" })
                                         // SCB confirmation ยืนยันการโอน
-                                        const res_confirmationn = JSON.parse(await Confirmation(access_token, data_v.accountFromName, body_accountTo, body_accountToBankCode, data_v.accountToName, body_amount, data_v.pccTraceNo, data_v.sequence, data_v.terminalNo, data_v.transactionToken))
+                                        const res_confirmationn = JSON.parse(await Confirmation(access_token, data_v.accountFromName, result.user_banknumber, result.bank_id, data_v.accountToName, body_amount, data_v.pccTraceNo, data_v.sequence, data_v.terminalNo, data_v.transactionToken))
                                         if (res_confirmationn.status.code == "1000") { // confirmation สำเร็จ
                                             var data_c = res_confirmationn.data
 

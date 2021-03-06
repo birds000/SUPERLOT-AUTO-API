@@ -6,8 +6,7 @@ function BankAll(callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }

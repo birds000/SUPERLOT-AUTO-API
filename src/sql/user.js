@@ -6,8 +6,7 @@ function UserAll(callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify(result);
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
@@ -29,8 +28,7 @@ function UserUpdate(bankID, bankNumber, telphone, userID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify(result);
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
@@ -60,8 +58,7 @@ function UserAdd(userID, name, phone, banknumber, bankID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify(result);
-            callback(null, data);
+            callback(null, result);
         }
     })
 }

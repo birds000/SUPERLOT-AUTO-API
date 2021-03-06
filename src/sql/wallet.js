@@ -6,8 +6,7 @@ function WalletAll(callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
@@ -19,8 +18,7 @@ function WalletTopup(amount, userID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
@@ -31,8 +29,7 @@ function WalletFindByUserID(userID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }

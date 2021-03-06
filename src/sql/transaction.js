@@ -6,8 +6,7 @@ function TransactionAll(callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
@@ -19,8 +18,7 @@ function TransactionWithdrawFindByUUID(user_userID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
@@ -32,8 +30,7 @@ function TransactionDepositFindByUUID(user_userID, callback) {
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
@@ -45,8 +42,7 @@ function TransactionAdd(transaction_datetime, transaction_amount, transaction_re
         if (err) {
             callback(err, null);
         } else {
-            const data = JSON.stringify({ status: "success", result });
-            callback(null, data);
+            callback(null, result);
         }
     })
 }
