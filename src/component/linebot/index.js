@@ -1,14 +1,10 @@
 const routes = require('express').Router();
 const request = require('request');
-const LINE_MESSAGING_API = 'https://api.line.me/v2/bot';
-const CHANNEL_ACCESS_TOKEN = 'e2gG9wh+xzndkztLpVhmQQLrf6DVLzEty7yf0WA5ZA3Kg7Yo3RuOuKwFUDglCqSmjWKOewNMu4CjCAz5nVpp8Fy00IbtJmbE5e5atsH5TPJDXcQmOODV5jzHSCmQvphD8rg+UFCn4YNScwNtVjnzvwdB04t89/1O/w1cDnyilFU=';
+const { LINE_MESSAGING_API, CHANNEL_ACCESS_TOKEN } = require('../../util/config');
 const LINE_HEADER = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${CHANNEL_ACCESS_TOKEN}`,
 };
-
-const RUAY = 'http://178.128.221.76';
-const RUAY_API = RUAY + ':8080';
 
 function reply(reply_token) {
     let body = JSON.stringify({
