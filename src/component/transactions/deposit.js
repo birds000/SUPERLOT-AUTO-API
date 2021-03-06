@@ -12,11 +12,12 @@ const prompay = "PromptPay";
 routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
     // req.body
     const body_userID = req.body.userID
-    const body_amount = req.body.amount
 
     const error = { status: "fail", message: "ไม่สามารถทำรายการฝากเงินได้" }
+    const error5001 = { status: "fail", message: "ไม่สามารถทำรายการฝากเงินได้ \nไม่พบประวัติการฝากเงินเข้าระบบ" }
+    const error5002 = { status: "fail", message: "ทางระบบได้ถอนเงินเข้าบัญชีท่านแล้ว \nกรุณาตรวจสอบประวัติการโอนเงินในบัญชีของท่าน" }
 
-    if (body_userID && body_amount) { // ตรวจสอบ REQUES BODY
+    if (body_userID) { // ตรวจสอบ REQUES BODY
         // ค้นหาข้อมูลสมาชิก SELECT tb_user
         UserFindByUserid(body_userID, async function (err, result) {
             if (result) {
@@ -24,19 +25,19 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                 var bankNumber = result.user_banknumber.substr(-6) // str.substr(-4); ตัดข้อความเหลือ 4 ตัวสุดท้าย
                 var remark = `${result.bank_abbrev_th} (${result.bank_abbrev_en}) /X${bankNumber}` // remark = "กรุงเทพ (BBL) /X156178"
 
-                // LOGIN เพื่อใช้ token
-                const access_token = JSON.parse(await LoginRefresh()).data.access_token;
-                if (access_token) {
+                TransactionDepositFindByUUID(body_userID, async function (err, transaction_result) { // ตรวจสอบประวัติการโอนเงิน ซ้ำมั้ย DB tb_transaction
+                    if (transaction_result) {
 
-                    // ตรวจสอบประวัติการทำรายการ
-                    const res_transaction = JSON.parse(await Transaction(access_token)) // transaction SCB
-                    if (res_transaction.status.code == 1000) { // มีประวัติการทำรายการ
+                        // LOGIN เพื่อใช้ token
+                        const access_token = JSON.parse(await LoginRefresh()).data.access_token;
+                        if (access_token) {
 
-                        const data_transaction = res_transaction.data.txnList.filter(item => item.txnRemark.includes(remark)); // ตรวจสอบว่ามีการโอนเงินเข้ามามั้ย ของบัญชีนี้
-                        if (data_transaction[0]) { // มีการโอนเข้ามา
+                            // ตรวจสอบประวัติการทำรายการ
+                            const res_transaction = JSON.parse(await Transaction(access_token)) // transaction SCB
+                            if (res_transaction.status.code == 1000) { // มีประวัติการทำรายการ
 
-                            TransactionDepositFindByUUID(body_userID, async function (err, transaction_result) { // ตรวจสอบประวัติการโอนเงิน ซ้ำมั้ย DB tb_transaction
-                                if (transaction_result) {
+                                const data_transaction = res_transaction.data.txnList.filter(item => item.txnRemark.includes(remark)); // ตรวจสอบว่ามีการโอนเงินเข้ามามั้ย ของบัญชีนี้
+                                if (data_transaction[0]) { // มีการโอนเข้ามา
 
                                     var status_transaction = true
                                     // ตรวจสอบว่าเคยมีประวัติการโอนเงิน หรือยัง
@@ -57,16 +58,16 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
 
                                     if (status_transaction) {
                                         // เพิ่มประวัติในฐานข้อมูล INSERT VALUE tb_transaction
-                                        TransactionAdd(data_transaction[0].txnDateTime, body_amount, remark, "C", userid, function (err, data) {
+                                        TransactionAdd(data_transaction[0].txnDateTime, data_transaction[0].txnAmount, remark, "C", userid, function (err, data) {
                                             if (data) { // success ทำรายการถอนสำเร็จ 
 
-                                                WalletTopup(body_amount, userid, async function (err, data) {
+                                                WalletTopup(data_transaction[0].txnAmount, userid, async function (err, data) {
                                                     if (err) { // error SQL WALLET 
                                                         console.log("error SQL WALLET")
                                                         res.json({ result: err, error: error, status: "fail" })
                                                     } else {
                                                         console.log("ทำรายการถอนเงินเสร็จสิ้น")
-                                                        res.json({ status: "success", message: "ทำรายการเติมเงินเสร็จสิ้น!", userID: body_userID, amount: body_amount, status: "success" })
+                                                        res.json({ status: "success", message: "ทำรายการเติมเงินเสร็จสิ้น!", userID: body_userID, amount: data_transaction[0].txnAmount, status: "success" })
                                                     }
                                                 })
 
@@ -77,28 +78,28 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
 
                                     } else { // มีข้อมูลการเติมเงินแล้ว (ไม่เติมซ้ำ)
                                         console.log("มีข้อมูลการเติมเงินแล้ว (ไม่เติมซ้ำ)")
-                                        res.json(error)
+                                        res.json(error5002)
                                     }
 
-                                } else { // error SQL transaction
-                                    res.json({ result: err, error: error, status: "fail" })
+                                } else { // ไม่พบประวัติการโอนเงิน
+                                    console.log("err ไม่พบประวัติการโอนเงินเข้าบัญชีฝาก")
+                                    res.json(error5001)
                                 }
-                            })
 
-                        } else { // ไม่พบประวัติการโอนเงิน
-                            console.log("err ไม่พบประวัติการโอนเงิน")
+                            } else { // err ไม่มีข้อมูลการทำรายการ
+                                console.log("err ไม่มีข้อมูลการทำรายการ")
+                                res.json(error5001)
+                            }
+
+                        } else { // error LOGIN
+                            console.log("error LOGIN")
                             res.json(error)
                         }
 
-                    } else { // err ไม่มีข้อมูลการทำรายการ
-                        console.log("err ไม่มีข้อมูลการทำรายการ")
-                        res.json(error)
+                    } else { // error SQL transaction
+                        res.json({ result: err, error: error, status: "fail" })
                     }
-
-                } else { // error LOGIN
-                    console.log("error LOGIN")
-                    res.json(error)
-                }
+                })
 
             } else { // error SQL USER FIND BY USERID
                 res.json({ result: err, error: error, status: "fail" })
