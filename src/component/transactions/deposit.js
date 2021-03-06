@@ -67,7 +67,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                                                         res.json({ result: err, error: error, status: "fail" })
                                                     } else {
                                                         console.log("ทำรายการถอนเงินเสร็จสิ้น")
-                                                        res.json({ status: "success", message: "ทำรายการเติมเงินเสร็จสิ้น!", userID: body_userID, amount: data_transaction[0].txnAmount, status: "success" })
+                                                        res.json({ status: "success", message: `ทำรายการเติมเงินเสร็จสิ้น!!`, userID: body_userID, amount: data_transaction[0].txnAmount })
                                                     }
                                                 })
 
