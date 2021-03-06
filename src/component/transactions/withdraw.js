@@ -1,9 +1,8 @@
 const routes = require('express').Router();
 const { API_V1 } = require('../../util/config');
 const { LoginRefresh } = require('../scb/login');
-const { Transaction } = require('../scb/transactions');
 const { Verification, Confirmation } = require('../scb/transfer');
-const { TransactionAdd, TransactionWithdrawFindByUUID } = require('../../sql/transaction')
+const { TransactionAdd } = require('../../sql/transaction')
 const { UserFindByUserid } = require('../../sql/user')
 
 routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
@@ -63,15 +62,18 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
                     }
 
                 } else { // error จำนวนเงินไม่เพียงพอ ไม่สามารถทำรายการถอนเงินได้
+                    console.log("error จำนวนเงินไม่เพียงพอ ไม่สามารถทำรายการถอนเงินได้")
                     res.json(error1001)
                 }
 
             } else { // error SQL USER FIND BY USERID
+                console.log("error SQL USER FIND BY USERID")
                 res.json({ result: err, error: error, status: "fail" })
             }
         });
 
     } else { // error No BODY
+        console.log("error No BODY")
         res.json(error)
     }
 
