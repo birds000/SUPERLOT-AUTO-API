@@ -76,7 +76,6 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
         console.log("error No BODY")
         res.json(error)
     }
-
 })
 
 

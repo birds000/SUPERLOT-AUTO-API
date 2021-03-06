@@ -72,6 +72,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                                                 })
 
                                             } else { // error SQL ADD TRANSACTION
+                                                console.log("error SQL ADD TRANSACTION")
                                                 res.json({ result: err, error: error })
                                             }
                                         });
@@ -97,16 +98,18 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                         }
 
                     } else { // error SQL transaction
+                        console.log("error SQL transaction")
                         res.json({ result: err, error: error, status: "fail" })
                     }
                 })
 
             } else { // error SQL USER FIND BY USERID
+                console.log("error SQL USER FIND BY USERID")
                 res.json({ result: err, error: error, status: "fail" })
             }
         })
 
-    } else {
+    } else { // error NO BODY
         console.log("error ไม่มี BODY")
         res.json(error)
     }
