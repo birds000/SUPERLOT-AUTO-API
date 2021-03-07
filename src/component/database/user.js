@@ -19,7 +19,7 @@ routes.get('/user/userID/:userID', (req, res) => {
                 if (data.length == 0) {
                     res.json(error);
                 } else {
-                    res.json({ result: data[0], status: "success" });
+                    res.json({ result: data, status: "success" });
                 }
                 
             }
