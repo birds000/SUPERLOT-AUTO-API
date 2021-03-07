@@ -83,13 +83,13 @@ routes.post('/user/add', async (req, res) => {
     
                             UserAdd(body_userID, data_v.accountToName, body_telphone, data_v.accountTo, data_v.accountToBankCode, function (err, data) {
                                 if (err) { // error SQL 
-                                    res.json({ result: err })
+                                    res.json({ result: err, status: "fail" })
 
                                 } else { // เพิ่มสมาชิกสำเร็จ
                                     lastUserID = data.insertId 
                                     WalletAdd(lastUserID, function (err, data) {
                                         if (err) { // error SQL 
-                                            res.json({ result: err })
+                                            res.json({ result: err, status: "fail" })
                                             
                                         } else { // success เพิ่มกระเป๋าสำเร็จ
                                             res.json({ message: "สมัครสมาชิกเสร็จสิ้น!!", status: "success" })
@@ -102,7 +102,7 @@ routes.post('/user/add', async (req, res) => {
     
                         } else if (res_verification.status.code == "5009") { // error เลขที่บัญชีรับเงินไม่ถูกต้อง
                             console.log("error เลขที่บัญชีรับเงินไม่ถูกต้อง")
-                            res.json({ result: res_verification }, error)
+                            res.json({ result: res_verification, status: "fail" })
     
                         } else { // error Verification
                             console.log("error Verification")
@@ -119,7 +119,7 @@ routes.post('/user/add', async (req, res) => {
                 }
     
             } else { // error SQL USER ALL
-                res.json({ result: err })
+                res.json({ result: err, status: "fail" })
             }
         });
 

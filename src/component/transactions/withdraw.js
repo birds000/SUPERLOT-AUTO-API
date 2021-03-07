@@ -40,7 +40,7 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
                                 // เพิ่มประวัติในฐานข้อมูล INSERT VALUE tb_transaction
                                 TransactionAdd(data_c.transactionDateTime, body_amount, remark, "D", userid, function (err, data) {
                                     if (err) { // error SQL 
-                                        res.json({ result: err }, error)
+                                        res.json({ result: err, status: "fail" })
                                     } else { // success ทำรายการถอนสำเร็จ 
                                         res.json({  status: "success", message: "ทำรายการถอนเสร็จสิ้น!", result: res_confirmationn, userID: body_userID, amount: body_amount })
                                         console.log("ทำรายการถอนเงินเสร็จสิ้น")
@@ -69,7 +69,7 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
 
             } else { // error SQL USER FIND BY USERID
                 console.log("error SQL USER FIND BY USERID")
-                res.json({ result: err }, error)
+                res.json({ result: err, status: "fail" })
             }
         });
 
