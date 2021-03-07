@@ -24,8 +24,10 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
         UserFindByUserid(body_userID, async function (err, result) {
             if (result) {
                 var userid = result.user_id
-                var bankNumber = result.user_banknumber.substr(-6) // str.substr(-4); ตัดข้อความเหลือ 4 ตัวสุดท้าย
-                var remark = `${result.bank_abbrev_th} (${result.bank_abbrev_en}) /X${bankNumber}` // remark = "กรุงเทพ (BBL) /X156178"
+                var bankNumber6 = result.user_banknumber.substr(-6) // str.substr(-4); ตัดข้อความเหลือ 4 ตัวสุดท้าย
+                var bankNumber4 = result.user_banknumber.substr(-4) // str.substr(-4); ตัดข้อความเหลือ 4 ตัวสุดท้าย
+                var remark = `${result.bank_abbrev_th} (${result.bank_abbrev_en}) /X${bankNumber6}` // remark = "กรุงเทพ (BBL) /X156178"
+                var remark_scb = `รับโอนจาก ${result.bank_abbrev_en} x${bankNumber4} ${result.user_name}` // remark = "รับโอนจาก SCB x8047 นาย กฤติกร จิตประภาจ"
 
                 TransactionDepositFindByUUID(body_userID, async function (err, transaction_result) { // ตรวจสอบประวัติการโอนเงิน ซ้ำมั้ย DB tb_transaction
                     if (transaction_result) {
@@ -39,7 +41,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                             if (res_transaction.status.code == 1000) { // มีประวัติการทำรายการ
 
                                 console.log(remark)
-                                const data_transaction = res_transaction.data.txnList.filter(item => remark.includes(item.txnRemark)); // ตรวจสอบว่ามีการโอนเงินเข้ามามั้ย ของบัญชีนี้
+                                const data_transaction = res_transaction.data.txnList.filter(item => remark.includes(item.txnRemark) || remark_scb.includes(item.txnRemark)); // ตรวจสอบว่ามีการโอนเงินเข้ามามั้ย ของบัญชีนี้
                                 if (data_transaction[0]) { // มีการโอนเข้ามา
 
                                     var status_transaction = true
