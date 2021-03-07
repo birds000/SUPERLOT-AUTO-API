@@ -53,7 +53,6 @@ routes.post('/user/update', (req, res) => {
 
 // ADD เพิ่มผู้เล่น
 routes.post('/user/add', async (req, res) => {
-    console.log('/user/add')
     const body_userID = req.body.userID;
     const body_bankID = req.body.bankID;
     const body_bankNumber = req.body.bankNumber;
@@ -79,18 +78,15 @@ routes.post('/user/add', async (req, res) => {
                         
                         // SCB verification สร้างบิล
                         const res_verification = JSON.parse(await Verification(access_token, body_bankNumber, body_bankID, '1'))
-                        console.log(res_verification)
                         if (res_verification.status.code == "1000") { // verification สำเร็จ
                             const data_v = res_verification.data
     
-                            console.log(data_v)
                             UserAdd(body_userID, data_v.accountToName, body_telphone, data_v.accountTo, data_v.accountToBankCode, function (err, data) {
                                 if (err) { // error SQL 
                                     res.json({ result: err })
 
                                 } else { // เพิ่มสมาชิกสำเร็จ
-
-                                    lastUserID = data.result.insertId 
+                                    lastUserID = data.insertId 
                                     WalletAdd(lastUserID, function (err, data) {
                                         if (err) { // error SQL 
                                             res.json({ result: err })

@@ -3,13 +3,13 @@ const { SCB_API, ACCOUNT_FROM, ACCOUNT_FROMTYPE } = require('../../util/connectS
 
 async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
     var data = JSON.stringify({
-        "accountFrom": "4094138047",
-        "accountFromType": "2",
+        "accountFrom": ACCOUNT_FROM,
+        "accountFromType": ACCOUNT_FROMTYPE,
         "accountTo": accountTo,
         "accountToBankCode": accountToBankCode,
         "amount": amount,
         "annotation": null,
-        "transferType": accountTo == "014" ? "3RD" : "ORFT"  // ใช้ ORFT แต่ถ้าไทยพาณิชย์ใช้ 3RD 
+        "transferType": accountToBankCode == "014" ? "3RD" : "ORFT"  // ใช้ ORFT แต่ถ้าไทยพาณิชย์ใช้ 3RD 
     });
     var config = {
         method: 'post',
