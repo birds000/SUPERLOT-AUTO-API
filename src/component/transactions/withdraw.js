@@ -42,13 +42,14 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
                                 TransactionAdd(data_c.transactionDateTime, body_amount, remark, "D", userid, function (err, data) {
                                     if (data) {
 
+                                        // แก้ไขจำนวนเงินในกระเป๋า
                                         WalletWithdraw(data_transaction[0].txnAmount, userid, async function (err, data) {
                                             if (err) { // error SQL WALLET 
                                                 console.log("error SQL WALLET")
                                                 res.json({ result: err, status: "fail" })
                                             } else { // success ทำรายการถอนสำเร็จ 
                                                 console.log("ทำรายการถอนเงินเสร็จสิ้น")
-                                                res.json({ status: "success", message: `ทำรายการเติมเงินเสร็จสิ้น!!`, userID: body_userID, amount: data_transaction[0].txnAmount })
+                                                res.json({ status: "success", message: `ทำรายการถอนเงินเสร็จสิ้น!!`, userID: body_userID, amount: data_transaction[0].txnAmount })
                                             }
                                         })
 
