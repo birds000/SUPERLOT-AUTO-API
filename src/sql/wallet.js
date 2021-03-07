@@ -34,6 +34,18 @@ function WalletTopup(amount, userID, callback) {
     })
 }
 
+// ถอนเงิน
+function WalletWithdraw(amount, userID, callback) {
+    var sql = `UPDATE tb_wallet SET wallet_balance = (wallet_balance - ?) WHERE user_id = ?`;
+    conn.query(sql, [amount, userID], (err, result) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+
 function WalletFindByUserID(userID, callback) {
     var sql = `SELECT * FROM tb_wallet WHERE user_id = ?`;
     conn.query(sql, [userID], (err, result) => {
@@ -45,4 +57,4 @@ function WalletFindByUserID(userID, callback) {
     })
 }
 
-module.exports = { WalletAll, WalletAdd, WalletTopup, WalletFindByUserID };
+module.exports = { WalletAll, WalletAdd, WalletTopup, WalletWithdraw, WalletFindByUserID };
