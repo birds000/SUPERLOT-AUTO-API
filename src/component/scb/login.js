@@ -1,5 +1,3 @@
-// const routes = require('express').Router();
-// const request = require('request');
 const axios = require('axios');
 const { SCB_API, API_REFRESH, DEVICEID } = require('../../util/connectSCB');
 

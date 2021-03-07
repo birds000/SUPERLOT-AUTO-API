@@ -1,11 +1,11 @@
 const axios = require('axios');
-const { SCB_API } = require('../../util/connectSCB');
+const { SCB_API, ACCOUNT_FROM, ACCOUNT_FROMTYPE } = require('../../util/connectSCB');
 const { DateNowYMD } = require('../../util/formatDate')
 
 async function Transaction(apiAuth) {
     var dateNow = DateNowYMD() 
     var data = JSON.stringify({ 
-        "accountNo": "4094138047",  
+        "accountNo": ACCOUNT_FROM,  
         "pageNumber": "1", 
         "pageSize": 20, 
         "productType": "2", 

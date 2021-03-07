@@ -1,8 +1,4 @@
-const routes = require('express').Router();
-const request = require('request');
-const conn = require('../../util/connectDB');
-
-const { SCB_API, API_REFRESH, DEVICEID } = require('../../util/connectSCB');
+const { SCB_API } = require('../../util/connectSCB');
 
 function eligiblebanks(apiAuth) {
     var options = {
@@ -20,4 +16,4 @@ function eligiblebanks(apiAuth) {
     });
 }
 
-module.exports = routes;
+module.exports = { eligiblebanks };
