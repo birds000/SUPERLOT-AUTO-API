@@ -4,7 +4,8 @@ const { LoginRefresh } = require('../scb/login');
 const { Transaction } = require('../scb/transactions');
 const { WalletTopup } = require('../../sql/wallet')
 const { TransactionAdd, TransactionDepositFindByUUID } = require('../../sql/transaction')
-const { UserFindByUserid } = require('../../sql/user')
+const { UserFindByUserid } = require('../../sql/user');
+const { commit } = require('../../util/connectDB');
 
 const tranfer = "รับโอนจาก";
 const prompay = "PromptPay";
@@ -37,6 +38,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                             const res_transaction = JSON.parse(await Transaction(access_token)) // transaction SCB
                             if (res_transaction.status.code == 1000) { // มีประวัติการทำรายการ
 
+                                console.log(remark)
                                 const data_transaction = res_transaction.data.txnList.filter(item => remark.includes(item.txnRemark)); // ตรวจสอบว่ามีการโอนเงินเข้ามามั้ย ของบัญชีนี้
                                 if (data_transaction[0]) { // มีการโอนเข้ามา
 
