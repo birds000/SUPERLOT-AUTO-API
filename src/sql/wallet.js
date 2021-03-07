@@ -11,6 +11,17 @@ function WalletAll(callback) {
     })
 }
 
+function WalletAdd(userID, callback) {
+    var sql = `INSERT INTO tb_wallet(wallet_balance, user_id) VALUES (0, ?)`;
+    conn.query(sql, [userID], (err, result) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+
 // เติมเงิน
 function WalletTopup(amount, userID, callback) {
     var sql = `UPDATE tb_wallet SET wallet_balance = (wallet_balance + ?) WHERE user_id = ?`;
@@ -34,4 +45,4 @@ function WalletFindByUserID(userID, callback) {
     })
 }
 
-module.exports = { WalletAll, WalletTopup, WalletFindByUserID };
+module.exports = { WalletAll, WalletAdd, WalletTopup, WalletFindByUserID };

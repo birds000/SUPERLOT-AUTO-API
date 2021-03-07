@@ -2,6 +2,7 @@ const routes = require('express').Router();
 const { UserAll, UserUpdate, UserAdd, UserFindByUserid } = require('../../sql/user')
 const { LoginRefresh } = require('../scb/login');
 const { Verification } = require('../scb/transfer');
+const { WalletAdd } =require('../../sql/wallet')
 
 // user/userID/:user_id ดึงข้อมูล user_ID ที่ระบุ
 routes.get('/user/userID/:userID', (req, res) => {
@@ -85,9 +86,20 @@ routes.post('/user/add', async (req, res) => {
                             UserAdd(body_userID, data_v.accountToName, body_telphone, data_v.accountTo, data_v.accountToBankCode, function (err, data) {
                                 if (err) { // error SQL 
                                     res.json({ result: err })
-                                } else { // success ทำรายการถอนสำเร็จ 
-                                    res.json({ result: data, message: "สมัครสมาชิกเสร็จสิ้น!!", status: "success" })
-                                    console.log("สมัครสมาชิกเสร็จสิ้น!!")
+                                    
+                                } else { // เพิ่มสมาชิกสำเร็จ
+
+                                    lastUserID = data.result.insertId 
+                                    WalletAdd(lastUserID, function (err, data) {
+                                        if (err) { // error SQL 
+                                            res.json({ result: err })
+                                            
+                                        } else { // success เพิ่มกระเป๋าสำเร็จ
+                                            res.json({ message: "สมัครสมาชิกเสร็จสิ้น!!", status: "success" })
+                                            console.log("สมัครสมาชิกเสร็จสิ้น!!")
+                                        }
+                                    });
+
                                 }
                             });
     
