@@ -65,7 +65,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                                                 WalletTopup(data_transaction[0].txnAmount, userid, async function (err, data) {
                                                     if (err) { // error SQL WALLET 
                                                         console.log("error SQL WALLET")
-                                                        res.json({ result: err, error: error, status: "fail" })
+                                                        res.json({ result: err }, error)
                                                     } else {
                                                         console.log("ทำรายการถอนเงินเสร็จสิ้น")
                                                         res.json({ status: "success", message: `ทำรายการเติมเงินเสร็จสิ้น!!`, userID: body_userID, amount: data_transaction[0].txnAmount })
@@ -74,7 +74,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
 
                                             } else { // error SQL ADD TRANSACTION
                                                 console.log("error SQL ADD TRANSACTION")
-                                                res.json({ result: err, error: error })
+                                                res.json({ result: err }, error )
                                             }
                                         });
 
@@ -104,13 +104,13 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
 
                     } else { // error SQL transaction
                         console.log("error SQL transaction")
-                        res.json({ result: err, error: error, status: "fail" })
+                        res.json({ result: err }, error)
                     }
                 })
 
             } else { // error SQL USER FIND BY USERID
                 console.log("error SQL USER FIND BY USERID")
-                res.json({ result: err, error: error, status: "fail" })
+                res.json({ result: err }, error)
             }
         })
 

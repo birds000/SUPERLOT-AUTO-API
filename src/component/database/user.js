@@ -102,7 +102,7 @@ routes.post('/user/add', async (req, res) => {
     
                         } else if (res_verification.status.code == "5009") { // error เลขที่บัญชีรับเงินไม่ถูกต้อง
                             console.log("error เลขที่บัญชีรับเงินไม่ถูกต้อง")
-                            res.json({ result: res_verification, error: error })
+                            res.json({ result: res_verification }, error)
     
                         } else { // error Verification
                             console.log("error Verification")
