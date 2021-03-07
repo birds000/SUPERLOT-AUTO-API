@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { SCB_API, ACCOUNT_FROM, ACCOUNT_FROMTYPE, TRANSFER_TYPE } = require('../../util/connectSCB');
+const { SCB_API, ACCOUNT_FROM, ACCOUNT_FROMTYPE } = require('../../util/connectSCB');
 
 async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
     var data = JSON.stringify({
@@ -9,7 +9,7 @@ async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
         "accountToBankCode": accountToBankCode,
         "amount": amount,
         "annotation": null,
-        "transferType": "ORFT"
+        "transferType": accountTo == "014" ? "3RD" : "ORFT"  // ใช้ ORFT แต่ถ้าไทยพาณิชย์ใช้ 3RD 
     });
     var config = {
         method: 'post',
@@ -35,7 +35,7 @@ async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
 
 }
 
-async function Confirmation(apiAuth, accountFromName, accountTo, accountToBankCode, accountToName, amount, pccTraceNo, sequence, terminalNo, transactionToken) {
+async function Confirmation(apiAuth, accountFromName, accountTo, accountToBankCode, accountToName, amount, pccTraceNo, sequence, terminalNo, transactionToken, transferType) {
     var axios = require('axios');
     var data = JSON.stringify({
         "accountFrom": ACCOUNT_FROM, // กำนหด บัญชีที่โอน
@@ -54,7 +54,7 @@ async function Confirmation(apiAuth, accountFromName, accountTo, accountToBankCo
         "sequence": sequence,
         "terminalNo": terminalNo,
         "transactionToken": transactionToken,
-        "transferType": TRANSFER_TYPE
+        "transferType": transferType
     });
 
     var config = {

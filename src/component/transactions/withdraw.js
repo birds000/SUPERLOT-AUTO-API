@@ -33,7 +33,7 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
                             const data_v = res_verification.data
 
                             // SCB confirmation ยืนยันการโอน
-                            const res_confirmationn = JSON.parse(await Confirmation(access_token, data_v.accountFromName, result.user_banknumber, result.bank_id, data_v.accountToName, body_amount, data_v.pccTraceNo, data_v.sequence, data_v.terminalNo, data_v.transactionToken))
+                            const res_confirmationn = JSON.parse(await Confirmation(access_token, data_v.accountFromName, result.user_banknumber, result.bank_id, data_v.accountToName, body_amount, data_v.pccTraceNo, data_v.sequence, data_v.terminalNo, data_v.transactionToken, data_v.transferType))
                             if (res_confirmationn.status.code == "1000") { // confirmation สำเร็จ
                                 var data_c = res_confirmationn.data
 

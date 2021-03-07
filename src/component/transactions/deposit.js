@@ -37,7 +37,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                             const res_transaction = JSON.parse(await Transaction(access_token)) // transaction SCB
                             if (res_transaction.status.code == 1000) { // มีประวัติการทำรายการ
 
-                                const data_transaction = res_transaction.data.txnList.filter(item => item.txnRemark.includes(remark)); // ตรวจสอบว่ามีการโอนเงินเข้ามามั้ย ของบัญชีนี้
+                                const data_transaction = res_transaction.data.txnList.filter(item => remark.includes(item.txnRemark)); // ตรวจสอบว่ามีการโอนเงินเข้ามามั้ย ของบัญชีนี้
                                 if (data_transaction[0]) { // มีการโอนเข้ามา
 
                                     var status_transaction = true
@@ -59,7 +59,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
 
                                     if (status_transaction) {
                                         // เพิ่มประวัติในฐานข้อมูล INSERT VALUE tb_transaction
-                                        TransactionAdd(data_transaction[0].txnDateTime, data_transaction[0].txnAmount, remark, "C", userid, function (err, data) {
+                                        TransactionAdd(data_transaction[0].txnDateTime, data_transaction[0].txnAmount, data_transaction[0].txnRemark, "C", userid, function (err, data) {
                                             if (data) { // success ทำรายการถอนสำเร็จ 
 
                                                 WalletTopup(data_transaction[0].txnAmount, userid, async function (err, data) {
@@ -88,9 +88,13 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                                     res.json(error5001)
                                 }
 
-                            } else { // err ไม่มีข้อมูลการทำรายการ
+                            } else if (res_transaction.status.code == 1011) { // err ไม่มีข้อมูลการทำรายการ
                                 console.log("err ไม่มีข้อมูลการทำรายการ")
                                 res.json(error5001)
+
+                            } else { // error SCB transaction
+                                console.log("error SCB transaction")
+                                res.json(error)
                             }
 
                         } else { // error LOGIN
