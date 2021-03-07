@@ -73,9 +73,10 @@ routes.post('/user/add', async (req, res) => {
     
                 if (status_user) { // ไม่มีชื่อผู้ใช้ในระบบ (สมัครได้)
                     // SCB login
-                    const access_token = JSON.parse(await LoginRefresh()).data.access_token;
-                    if (access_token) {
-    
+                    const res_login = JSON.parse(await LoginRefresh());
+                    if (res_login.status.code == "1000") {
+                        const access_token = res_login.data.access_token;
+                        
                         // SCB verification สร้างบิล
                         const res_verification = JSON.parse(await Verification(access_token, body_bankNumber, body_bankID, '1'))
                         console.log(res_verification)
@@ -86,7 +87,7 @@ routes.post('/user/add', async (req, res) => {
                             UserAdd(body_userID, data_v.accountToName, body_telphone, data_v.accountTo, data_v.accountToBankCode, function (err, data) {
                                 if (err) { // error SQL 
                                     res.json({ result: err })
-                                    
+
                                 } else { // เพิ่มสมาชิกสำเร็จ
 
                                     lastUserID = data.result.insertId 
