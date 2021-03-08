@@ -61,6 +61,7 @@ routes.post('/user/add', async (req, res) => {
     const error = { status: "fail", message: "ไม่สามารถเพิ่มสมาชิกได้" }
 
     if (body_userID && body_bankID && body_bankNumber && body_telphone) {
+        console.log("/user/add");
         UserAll(async function (err, data_user) {
             if (data_user) {
                 var status_user = true
@@ -73,6 +74,7 @@ routes.post('/user/add', async (req, res) => {
                 if (status_user) { // ไม่มีชื่อผู้ใช้ในระบบ (สมัครได้)
                     // SCB login
                     const res_login = JSON.parse(await LoginRefresh());
+                    console.log(res_login)
                     if (res_login.status.code == "1000") {
                         const access_token = res_login.data.access_token;
                         
@@ -104,7 +106,10 @@ routes.post('/user/add', async (req, res) => {
                             console.log("error เลขที่บัญชีรับเงินไม่ถูกต้อง")
                             res.json({ result: res_verification, status: "fail" })
     
-                        } else { // error Verification
+                        } else if (res_verification.status.code == "7001") { // error ยอดเงินในบัญชีไม่พอ
+                            console.log("error ยอดเงินในบัญชีไม่เพียงพอ")
+                            res.json(error)
+                        }else { // error Verification
                             console.log("error Verification")
                             res.json(error)
                         }
