@@ -73,13 +73,12 @@ routes.post('/user/add', async (req, res) => {
     
                 if (status_user) { // ไม่มีชื่อผู้ใช้ในระบบ (สมัครได้)
                     // SCB login
-                    const res_login = JSON.parse(await LoginRefresh());
-                    console.log(res_login)
+                    const res_login = await LoginRefresh();
                     if (res_login.status.code == "1000") {
                         const access_token = res_login.data.access_token;
                         
                         // SCB verification สร้างบิล
-                        const res_verification = JSON.parse(await Verification(access_token, body_bankNumber, body_bankID, '1'))
+                        const res_verification = await Verification(access_token, body_bankNumber, body_bankID, '1')
                         if (res_verification.status.code == "1000") { // verification สำเร็จ
                             const data_v = res_verification.data
     

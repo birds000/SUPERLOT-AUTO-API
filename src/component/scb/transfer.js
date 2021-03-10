@@ -11,6 +11,7 @@ async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
         "annotation": null,
         "transferType": accountToBankCode == "014" ? "3RD" : "ORFT"  // ใช้ ORFT แต่ถ้าไทยพาณิชย์ใช้ 3RD 
     });
+    console.log(data)
     var config = {
         method: 'post',
         url: `${SCB_API}/v2/transfer/verification`,
@@ -25,7 +26,7 @@ async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
     try {
         const response = await axios(config);
         // console.log(JSON.stringify(response.data));
-        const result = JSON.stringify(response.data);
+        const result = response.data;
         return result
 
     } catch (error) {
@@ -71,7 +72,7 @@ async function Confirmation(apiAuth, accountFromName, accountTo, accountToBankCo
     try {
         const response = await axios(config);
         // console.log(JSON.stringify(response.data));
-        const result = JSON.stringify(response.data);
+        const result = response.data;
         return result
 
     } catch (error) {

@@ -17,7 +17,7 @@ async function LoginRefresh() {
     try {
         const response = await axios(config);
         // console.log(JSON.stringify(response.data));
-        const result = JSON.stringify(response.data);
+        const result = response.data;
         return result
 
     } catch (error) {

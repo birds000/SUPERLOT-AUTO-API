@@ -25,16 +25,17 @@ routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
 
                 if (parseFloat(body_amount) <= parseFloat(result.wallet_balance)) { //ตรวจสอบจำนวนเงิน <= จำนวนเงินในกระเป๋า tb_wallet
                     // SCB login
-                    const access_token = JSON.parse(await LoginRefresh()).data.access_token;
-                    if (access_token) {
+                    const res_login = await LoginRefresh();
+                    if (res_login.status.code == "1000") {
+                        const access_token = res_login.data.access_token;
 
                         //  SCB Verification สร้างบิล
-                        const res_verification = JSON.parse(await Verification(access_token, result.user_banknumber, result.bank_id, body_amount))
+                        const res_verification = await Verification(access_token, result.user_banknumber, result.bank_id, body_amount)
                         if (res_verification.status.code == "1000") { // verification สำเร็จ
                             const data_v = res_verification.data
 
                             // SCB confirmation ยืนยันการโอน
-                            const res_confirmationn = JSON.parse(await Confirmation(access_token, data_v.accountFromName, result.user_banknumber, result.bank_id, data_v.accountToName, body_amount, data_v.pccTraceNo, data_v.sequence, data_v.terminalNo, data_v.transactionToken, data_v.transferType))
+                            const res_confirmationn = await Confirmation(access_token, data_v.accountFromName, result.user_banknumber, result.bank_id, data_v.accountToName, body_amount, data_v.pccTraceNo, data_v.sequence, data_v.terminalNo, data_v.transactionToken, data_v.transferType)
                             if (res_confirmationn.status.code == "1000") { // confirmation สำเร็จ
                                 var data_c = res_confirmationn.data
 

@@ -33,11 +33,12 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                     if (transaction_result) {
 
                         // LOGIN เพื่อใช้ token
-                        const access_token = JSON.parse(await LoginRefresh()).data.access_token;
-                        if (access_token) {
+                        const res_login = await LoginRefresh();
+                        if (res_login.status.code == "1000") {
+                            const access_token = res_login.data.access_token;
 
                             // ตรวจสอบประวัติการทำรายการ
-                            const res_transaction = JSON.parse(await Transaction(access_token)) // transaction SCB
+                            const res_transaction = await Transaction(access_token) // transaction SCB
                             if (res_transaction.status.code == 1000) { // มีประวัติการทำรายการ
 
                                 console.log(remark)
@@ -45,20 +46,17 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
                                 if (data_transaction[0]) { // มีการโอนเข้ามา
 
                                     var status_transaction = true
-                                    // ตรวจสอบว่าเคยมีประวัติการโอนเงิน หรือยัง
-                                    res_transaction.data.txnList.forEach(item_scb => {
-                                        transaction_result.forEach(item_db => {
-
-                                            if (
-                                                item_scb.txnRemark.includes(item_db.transaction_remark) &&
-                                                item_scb.txnDateTime == item_db.transaction_datetime &&
-                                                item_scb.txnDebitCreditFlag == item_db.transaction_creditflag &&
-                                                item_scb.txnAmount == item_db.transaction_amount
-                                            ) {
-                                                // มีข้อมูลการเติมเงินแล้ว (ไม่เติมซ้ำ)
-                                                status_transaction = false
-                                            }
-                                        });
+                                    // ตรวจสอบว่ามีประวัติการโอนที่ยังไม่อนุมัติหรือยัง
+                                    transaction_result.forEach(item_db => {
+                                        if (
+                                            data_transaction[0].txnRemark.includes(item_db.transaction_remark) &&
+                                            data_transaction[0].txnDateTime == item_db.transaction_datetime &&
+                                            data_transaction[0].txnDebitCreditFlag == item_db.transaction_creditflag &&
+                                            data_transaction[0].txnAmount == item_db.transaction_amount
+                                        ) {
+                                            // มีประวัติการเติมเงินแล้ว (ไม่เติมซ้ำ)
+                                            status_transaction = false
+                                        }
                                     });
 
                                     if (status_transaction) {
