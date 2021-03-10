@@ -50,6 +50,7 @@ routes.post(`${API_V1}/transfer/withdraw`, async (req, res) => {
                                             const res_withdraw = await Withdraw(username, body_amount)
                                             if (res_withdraw.amount) {
                                                 console.log("ทำรายการถอนสำเร็จ")
+                                                console.log({ result: res_withdraw, status: "success" })
                                                 res.json({ result: res_withdraw, status: "success" })
                                             } else if(res_withdraw.message){ // error 
                                                 console.log("supper lot : " + res_withdraw.message)

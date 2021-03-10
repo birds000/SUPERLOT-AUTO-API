@@ -11,7 +11,6 @@ async function Verification(apiAuth, accountTo, accountToBankCode, amount) {
         "annotation": null,
         "transferType": accountToBankCode == "014" ? "3RD" : "ORFT"  // ใช้ ORFT แต่ถ้าไทยพาณิชย์ใช้ 3RD 
     });
-    console.log(data)
     var config = {
         method: 'post',
         url: `${SCB_API}/v2/transfer/verification`,

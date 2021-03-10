@@ -64,12 +64,13 @@ routes.post(`${API_V1}/transfer/deposit`, async (req, res) => {
                                         TransactionAdd(data_transaction[0].txnDateTime, data_transaction[0].txnAmount, data_transaction[0].txnRemark, "C", userid, async function (err, data) {
                                             if (data) { // success ทำรายการถอนสำเร็จ 
 
-                                                const res_withdraw = await Deposit(username, data_transaction[0].txnAmount)
-                                                if (res_withdraw.amount) {
+                                                const res_deposit = await Deposit(username, data_transaction[0].txnAmount)
+                                                if (res_deposit.amount) {
                                                     console.log("ทำรายการเติมเงินสำเร็จ")
-                                                    res.json({ result: res_withdraw, status: "success" })
-                                                } else if(res_withdraw.message){ // error 
-                                                    console.log("supper lot : " + res_withdraw.message)
+                                                    console.log({ result: res_deposit, status: "success" })
+                                                    res.json({ result: res_deposit, status: "success" })
+                                                } else if(res_deposit.message){ // error 
+                                                    console.log("supper lot : " + res_deposit.message)
                                                     res.json(error)
                                                 } else {
                                                     console.log("supper lot : error");
