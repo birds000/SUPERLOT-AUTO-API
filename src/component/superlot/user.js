@@ -7,7 +7,7 @@ async function GetMember(username) {
         method: 'GET',
         url: `${SUPERLOT_API}/members?username=${username}`,
         headers: {
-            'Authorization': `Bearer 91f671b725118043925163817d00b38c12ed94ce9650285d2183c362722ece3f`,
+            'Authorization': `Bearer ${SUPERLOT_TOKEN}`,
         }
     };
 
