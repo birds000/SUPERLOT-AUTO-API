@@ -13,6 +13,7 @@ const LINEBOT = require('./src/component/linebot/index');
 const BANK = require('./src/component/database/bank');
 const TRANSFER_DEPOSIT = require('./src/component/transfer/deposit');
 const TRANSFER_WITHDRAW = require('./src/component/transfer/withdraw');
+const SUPERLOT = require('./src/component/superlot/test');
 
 // UTIL
 const { URL, PORT, API_V1 } = require('./src/util/config'); 
@@ -51,6 +52,8 @@ app.get(`${API_V1}/scb/add/eligiblebanks`, UPDATE_BANK)
 // Transfer
 app.post(`${API_V1}/transfer/withdraw`, TRANSFER_WITHDRAW) 
 app.post(`${API_V1}/transfer/deposit`, TRANSFER_DEPOSIT)
+
+app.get(`${API_V1}/test/superlot`, SUPERLOT);
 
 app.listen(PORT, () => {
     console.log('Start server at port '+ PORT)
