@@ -1,10 +1,11 @@
 const routes = require('express').Router();
 const request = require('request');
 const conn = require('../../util/connectDB');
+const { API_V1 } = require('../../util/config')
 
 const { SCB_API, API_REFRESH, DEVICEID } = require('../../util/connectSCB');
 
-routes.get('/scb/transfer/eligiblebanks', (req, res) => {
+routes.get(`${API_V1}/scb/transfer/eligiblebanks`, (req, res) => {
     var body = JSON.stringify({ "deviceId": DEVICEID })
     request.post({
         url: `${SCB_API}/v1/login/refresh`,
@@ -34,7 +35,7 @@ routes.get('/scb/transfer/eligiblebanks', (req, res) => {
     });
 })
 
-routes.get('/scb/update/eligiblebanks', (req, res) => {
+routes.get(`${API_V1}/scb/update/eligiblebanks`, (req, res) => {
     var body = JSON.stringify({ "deviceId": DEVICEID })
     request.post({
         url: `${SCB_API}/v1/login/refresh`,
@@ -79,7 +80,7 @@ routes.get('/scb/update/eligiblebanks', (req, res) => {
     });
 })
 
-routes.get('/scb/add/eligiblebanks', (req, res) => {
+routes.get(`${API_V1}/scb/add/eligiblebanks`, (req, res) => {
     var body = JSON.stringify({ "deviceId": DEVICEID })
     request.post({
         url: `${SCB_API}/v1/login/refresh`,

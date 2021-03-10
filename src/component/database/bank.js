@@ -1,8 +1,9 @@
 const routes = require('express').Router();
 const conn = require('../../util/connectDB');
+const { API_V1 } = require('../../util/config')
 
 // bank all ดึงข้อมูลธนาคารทั้งหมด
-routes.get('/bank/all', (req, res) => {
+routes.get(`${API_V1}/bank/all`, (req, res) => {
     var sql = `SELECT * FROM tb_bank`;
     conn.query(sql, (err, result) => {
         if (err) {
