@@ -67,7 +67,6 @@ routes.post(`${API_V1}/transfer/deposit`, async (req, res) => {
                                                 const res_deposit = await Deposit(username, data_transaction[0].txnAmount)
                                                 if (res_deposit.amount) {
                                                     console.log("ทำรายการเติมเงินสำเร็จ")
-                                                    console.log({ result: res_deposit, status: "success" })
                                                     res.json({ result: res_deposit, status: "success" })
                                                 } else if(res_deposit.message){ // error 
                                                     console.log("supper lot : " + res_deposit.message)

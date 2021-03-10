@@ -17,15 +17,15 @@ routes.get(`${API_V1}/user/userID/:userID`, (req, res) => {
             if (err) {
                 res.json(error)
             } else {
-                if (data.length == 0) {
-                    res.json(error);
-                } else {
+                if (data.user_username) {
                     const superlot = await GetMember(data.user_username);
                     const result = {
                         ...data,
                         superlot
                     }
                     res.json({ result: result, status: "success" });
+                } else {
+                    res.json(error);
                 }
             }
         })
