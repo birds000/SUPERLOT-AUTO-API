@@ -2,10 +2,9 @@ const routes = require('express').Router();
 const { API_V1 } = require('../../util/config');
 const { LoginRefresh } = require('../scb/login');
 const { Transaction } = require('../scb/transactions');
-const { WalletTopup } = require('../../sql/wallet')
 const { TransactionAdd, TransactionDepositFindByUUID } = require('../../sql/transaction')
 const { UserFindByUserid } = require('../../sql/user');
-const { commit } = require('../../util/connectDB');
+const { Deposit } = require('../superlot/transfer');
 
 const tranfer = "รับโอนจาก";
 const prompay = "PromptPay";
@@ -24,6 +23,7 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
         UserFindByUserid(body_userID, async function (err, result) {
             if (result) {
                 var userid = result.user_id
+                var username = result.user_username
                 var bankNumber6 = result.user_banknumber.substr(-6) // str.substr(-4); ตัดข้อความเหลือ 4 ตัวสุดท้าย
                 var bankNumber4 = result.user_banknumber.substr(-4) // str.substr(-4); ตัดข้อความเหลือ 4 ตัวสุดท้าย
                 var remark = `${result.bank_abbrev_th} (${result.bank_abbrev_en}) /X${bankNumber6}` // remark = "กรุงเทพ (BBL) /X156178"
@@ -61,18 +61,20 @@ routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
 
                                     if (status_transaction) {
                                         // เพิ่มประวัติในฐานข้อมูล INSERT VALUE tb_transaction
-                                        TransactionAdd(data_transaction[0].txnDateTime, data_transaction[0].txnAmount, data_transaction[0].txnRemark, "C", userid, function (err, data) {
+                                        TransactionAdd(data_transaction[0].txnDateTime, data_transaction[0].txnAmount, data_transaction[0].txnRemark, "C", userid, async function (err, data) {
                                             if (data) { // success ทำรายการถอนสำเร็จ 
 
-                                                WalletTopup(data_transaction[0].txnAmount, userid, async function (err, data) {
-                                                    if (err) { // error SQL WALLET 
-                                                        console.log("error SQL WALLET")
-                                                        res.json({ result: err, status: "fail" })
-                                                    } else {
-                                                        console.log("ทำรายการถอนเงินเสร็จสิ้น")
-                                                        res.json({ status: "success", message: `ทำรายการเติมเงินเสร็จสิ้น!!`, userID: body_userID, amount: data_transaction[0].txnAmount })
-                                                    }
-                                                })
+                                                const res_withdraw = await Deposit(username, data_transaction[0].txnAmount)
+                                                if (res_withdraw.amount) {
+                                                    console.log("ทำรายการเติมเงินสำเร็จ")
+                                                    res.json({ result: res_withdraw, status: "success" })
+                                                } else if(res_withdraw.message){ // error 
+                                                    console.log("supper lot : " + res_withdraw.message)
+                                                    res.json(error)
+                                                } else {
+                                                    console.log("supper lot : error");
+                                                    res.json(error)
+                                                }
 
                                             } else { // error SQL ADD TRANSACTION
                                                 console.log("error SQL ADD TRANSACTION")

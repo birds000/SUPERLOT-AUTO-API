@@ -2,10 +2,10 @@ const axios = require('axios');
 const { SUPERLOT_API, SUPERLOT_TOKEN } = require('../../util/connectSuperlot');
 
 // GET Member
-async function GetMember() {
+async function GetMember(username) {
     var config = {
         method: 'GET',
-        url: `${SUPERLOT_API}/members?username=${USER}`,
+        url: `${SUPERLOT_API}/members?username=${username}`,
         headers: {
             'Authorization': `Bearer ${SUPERLOT_TOKEN}`,
         }
@@ -14,7 +14,7 @@ async function GetMember() {
     try {
         const response = await axios(config);
         // console.log(JSON.stringify(response.data));
-        const result = JSON.stringify(response.data);
+        const result = response.data;
         return result
 
     } catch (error) {
@@ -46,7 +46,7 @@ async function CreateMember(username, password, name, phone) {
     try {
         const response = await axios(config);
         // console.log(JSON.stringify(response.data));
-        const result = JSON.stringify(response.data);
+        const result = response.data;
         return result
 
     } catch (error) {

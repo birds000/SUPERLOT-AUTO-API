@@ -1,11 +1,12 @@
 const routes = require('express').Router();
-const { UserAll, UserUpdate, UserAdd, UserFindByUserid } = require('../../sql/user')
+const { API_V1 } = require('../../util/config')
+const { UserAll, UserUpdate, UserAdd, UserRandom, UserFindByUserid, UserFindByID } = require('../../sql/user')
+const { GetMember, CreateMember } = require('../superlot/user')
 const { LoginRefresh } = require('../scb/login');
 const { Verification } = require('../scb/transfer');
-const { WalletAdd } =require('../../sql/wallet')
 
 // user/userID/:user_id ดึงข้อมูล user_ID ที่ระบุ
-routes.get('/user/userID/:userID', (req, res) => {
+routes.get(`${API_V1}/user/userID/:userID`, (req, res) => {
     console.log("Fething userID with..." + req.params.userID)
     const param_userID = req.params.userID
 
@@ -19,9 +20,13 @@ routes.get('/user/userID/:userID', (req, res) => {
                 if (data.length == 0) {
                     res.json(error);
                 } else {
-                    res.json({ result: data, status: "success" });
+                    const superlot = await GetMember(data.user_username);
+                    const result = {
+                        ...data,
+                        superlot
+                    }
+                    res.json({ result: result, status: "success" });
                 }
-                
             }
         })
     } else { // error NO BODY
@@ -30,7 +35,7 @@ routes.get('/user/userID/:userID', (req, res) => {
 });
 
 // UPDATE แก้ไขข้อมูลผู็เล่น
-routes.post('/user/update', (req, res) => {
+routes.post(`${API_V1}/user/update`, (req, res) => {
     const body_userID = req.body.userID;
     const body_bankID = req.body.bankID;
     const body_bankNumber = req.body.bankNumber;
@@ -52,13 +57,13 @@ routes.post('/user/update', (req, res) => {
 })
 
 // ADD เพิ่มผู้เล่น
-routes.post('/user/add', async (req, res) => {
+routes.post(`${API_V1}/user/add`, async (req, res) => {
     const body_userID = req.body.userID;
     const body_bankID = req.body.bankID;
     const body_bankNumber = req.body.bankNumber;
     const body_telphone = req.body.telphone;
 
-    const error = { status: "fail", message: "ไม่สามารถเพิ่มสมาชิกได้" }
+    const error = { status: "fail", message: "ไม่สามารถเพิ่มสมาชิกได้ กรุณาติดต่อ Admin" }
 
     if (body_userID && body_bankID && body_bankNumber && body_telphone) {
         console.log("/user/add");
@@ -82,22 +87,24 @@ routes.post('/user/add', async (req, res) => {
                         if (res_verification.status.code == "1000") { // verification สำเร็จ
                             const data_v = res_verification.data
     
-                            UserAdd(body_userID, data_v.accountToName, body_telphone, data_v.accountTo, data_v.accountToBankCode, function (err, data) {
+                            UserAdd(body_userID, data_v.accountToName, body_telphone, data_v.accountTo, data_v.accountToBankCode, async function (err, data) {
                                 if (err) { // error SQL 
                                     res.json({ result: err, status: "fail" })
 
                                 } else { // เพิ่มสมาชิกสำเร็จ
-                                    lastUserID = data.insertId 
-                                    WalletAdd(lastUserID, function (err, data) {
-                                        if (err) { // error SQL 
-                                            res.json({ result: err, status: "fail" })
-                                            
-                                        } else { // success เพิ่มกระเป๋าสำเร็จ
-                                            res.json({ message: "สมัครสมาชิกเสร็จสิ้น!!", status: "success" })
-                                            console.log("สมัครสมาชิกเสร็จสิ้น!!")
-                                        }
-                                    });
+                                    const res_createMember = await CreateMember(data.user_username, data.user_password, data.user_name, data.user_phone);
+                                    console.log(res_createMember)
+                                    if (res_createMember.success == true) {
+                                        res.json({ result: data, status: "success" })
 
+                                    } else if(res_createMember.message == "ชื่อผู้ใช้ ถูกใช้แล้ว"){ // error ชื่อผู้ใช้ ถูกใช้แล้ว Supper lot
+                                        console.log("ชื่อผู้ใช้ ถูกใช้งานแล้ว Supper lot")
+                                        res.json(error)
+
+                                    } else { // error CreateMember Super lot
+                                        console.log("error CreateMember Super lot")
+                                        res.json(error)
+                                    }
                                 }
                             });
     
