@@ -1,5 +1,6 @@
 const conn = require('../util/connectDB');
-const USERNAME_DEFULT = "E22";
+const { AGENT_USER } = require('../util/connectSuperlot');
+
 function UserAll(callback) {
     var sql = `SELECT * FROM tb_user`;
     conn.query(sql, (err, result) => {
@@ -91,7 +92,7 @@ function UserRandom(callback) {
 function UserAdd(userID, name, phone, banknumber, bankID, callback) {
     var sql = `INSERT INTO tb_user (user_userId, user_username, user_password, user_name, user_phone, user_banknumber, user_bank_id) 
                 VALUES (?, 
-                CONCAT('${USERNAME_DEFULT}', (SELECT 
+                CONCAT('${AGENT_USER}', (SELECT 
                     concat(
                         char(round(rand()*25)+65),
                         char(round(rand()*25)+65),
