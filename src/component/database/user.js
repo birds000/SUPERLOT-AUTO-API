@@ -7,7 +7,7 @@ const { Verification } = require('../scb/transfer');
 
 // user/userID/:user_id ดึงข้อมูล user_ID ที่ระบุ
 routes.get(`${API_V1}/user/userID/:userID`, (req, res) => {
-    console.log("Fething userID with..." + req.params.userID)
+    console.log("Fething userID 123 with..." + req.params.userID)
     const param_userID = req.params.userID
 
     const error = { status: "fail", message: "ไม่สามารถค้นหาสมาชิกได้" }
@@ -17,7 +17,7 @@ routes.get(`${API_V1}/user/userID/:userID`, (req, res) => {
             if (err) {
                 res.json(error)
             } else {
-                if (data.user_username) {
+                if (data) {
                     const superlot = await GetMember(data.user_username);
                     const result = {
                         ...data,
