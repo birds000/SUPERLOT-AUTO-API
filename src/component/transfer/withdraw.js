@@ -8,7 +8,7 @@ const { Withdraw } = require('../superlot/transfer');
 const { GetMember } = require('../superlot/user');
  
 // ถอน
-routes.post(`${API_V1}/transaction/withdraw`, async (req, res) => {
+routes.post(`${API_V1}/transfer/withdraw`, async (req, res) => {
     // req.body
     const body_userID = req.body.userID
     const body_amount = req.body.amount

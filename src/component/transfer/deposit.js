@@ -10,7 +10,7 @@ const tranfer = "รับโอนจาก";
 const prompay = "PromptPay";
 
 // ฝาก
-routes.post(`${API_V1}/transaction/deposit`, async (req, res) => {
+routes.post(`${API_V1}/transfer/deposit`, async (req, res) => {
     // req.body
     const body_userID = req.body.userID
 
