@@ -51,9 +51,7 @@ app.get(`${API_V1}/scb/add/eligiblebanks`, UPDATE_BANK)
 
 
 // Transfer
-app.get(`${API_V1}/transfer/login/refresh`, (req, res) => {
-    res.send('scb Login : ')
-})
+app.get(`${API_V1}/transfer/login/refresh`, TRANSFER_LOGIN)
 app.post(`${API_V1}/transfer/withdraw`, TRANSFER_WITHDRAW) 
 app.post(`${API_V1}/transfer/deposit`, TRANSFER_DEPOSIT)
 
