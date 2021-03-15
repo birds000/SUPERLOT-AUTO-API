@@ -13,7 +13,7 @@ const LINEBOT = require('./src/component/linebot/index');
 const BANK = require('./src/component/database/bank');
 const TRANSFER_DEPOSIT = require('./src/component/transfer/deposit');
 const TRANSFER_WITHDRAW = require('./src/component/transfer/withdraw');
-const TRANSFER_LOGIN = require('./src/component/scb/login');
+const TRANSFER_LOGIN = require('./src/component/transfer/login');
 const SUPERLOT = require('./src/component/superlot/test');
 
 // UTIL
@@ -51,7 +51,9 @@ app.get(`${API_V1}/scb/add/eligiblebanks`, UPDATE_BANK)
 
 
 // Transfer
-app.post(`${API_V1}/scb/login/refresh`, TRANSFER_LOGIN)
+app.get(`${API_V1}/transfer/login/refresh`, (req, res) => {
+    res.send('scb Login : ')
+})
 app.post(`${API_V1}/transfer/withdraw`, TRANSFER_WITHDRAW) 
 app.post(`${API_V1}/transfer/deposit`, TRANSFER_DEPOSIT)
 
