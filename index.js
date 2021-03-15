@@ -44,6 +44,7 @@ app.post(`${API_V1}/user/add`, USERID)
 app.post(`${API_V1}/user/update`, USERID)
 // BANK
 app.get(`${API_V1}/bank/all`, BANK)
+app.get(`${API_V1}/scb/login/refresh`, UPDATE_BANK)
 app.get(`${API_V1}/scb/transfer/eligiblebanks`, UPDATE_BANK)
 app.get(`${API_V1}/scb/update/eligiblebanks`, UPDATE_BANK)
 app.get(`${API_V1}/scb/add/eligiblebanks`, UPDATE_BANK)
