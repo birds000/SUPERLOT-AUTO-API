@@ -15,6 +15,7 @@ const TRANSFER_DEPOSIT = require('./src/component/transfer/deposit');
 const TRANSFER_WITHDRAW = require('./src/component/transfer/withdraw');
 const TRANSFER_LOGIN = require('./src/component/transfer/login');
 const SUPERLOT = require('./src/component/superlot/test');
+const RUAYLOTTO = require('./src/component/ruaylotto/test');
 
 // UTIL
 const { URL, PORT, API_V1 } = require('./src/util/config'); 
@@ -29,33 +30,35 @@ app.use(session({
 }))
 
 // HOME
-app.get(`${API_V1}/`, HOME)
-app.get(`${API_V1}/bank/all/callbank`, HOME)
-app.get(`${API_V1}/param/:param`, HOME)
+app.get(`/api/v1/`, HOME)
+app.get(`/api/v1/bank/all/callbank`, HOME)
+app.get(`/api/v1/param/:param`, HOME)
 
 // LINE BOT
-app.get(`${API_V1}/line/reply`, LINEBOT)
-app.post(`${API_V1}/line/userprofile`, LINEBOT)
-app.get(`${API_V1}/line`, LINEBOT)
+app.get(`/api/v1/line/reply`, LINEBOT)
+app.post(`/api/v1/line/userprofile`, LINEBOT)
+app.get(`/api/v1/line`, LINEBOT)
 
 // Database
 // USER
-app.get(`${API_V1}/user/userID/:userID`, USERID)
-app.post(`${API_V1}/user/add`, USERID)
-app.post(`${API_V1}/user/update`, USERID)
+app.get(`/api/v1/user/userID/:userID`, USERID)
+app.post(`/api/v1/user/add`, USERID)
+app.post(`/api/v1/user/update`, USERID)
 // BANK
-app.get(`${API_V1}/bank/all`, BANK)
-app.get(`${API_V1}/scb/transfer/eligiblebanks`, UPDATE_BANK)
-app.get(`${API_V1}/scb/update/eligiblebanks`, UPDATE_BANK)
-app.get(`${API_V1}/scb/add/eligiblebanks`, UPDATE_BANK)
+app.get(`/api/v1/bank/all`, BANK)
+app.get(`/api/v1/scb/transfer/eligiblebanks`, UPDATE_BANK)
+app.get(`/api/v1/scb/update/eligiblebanks`, UPDATE_BANK)
+app.get(`/api/v1/scb/add/eligiblebanks`, UPDATE_BANK)
 
 
 // Transfer
-app.get(`${API_V1}/transfer/login/refresh`, TRANSFER_LOGIN)
-app.post(`${API_V1}/transfer/withdraw`, TRANSFER_WITHDRAW) 
-app.post(`${API_V1}/transfer/deposit`, TRANSFER_DEPOSIT)
+app.get(`/api/v1/transfer/login/refresh`, TRANSFER_LOGIN)
+app.post(`/api/v1/transfer/withdraw`, TRANSFER_WITHDRAW) 
+app.post(`/api/v1/transfer/deposit`, TRANSFER_DEPOSIT)
 
-app.get(`${API_V1}/test/superlot`, SUPERLOT);
+app.get(`/api/v1/test/superlot`, SUPERLOT);
+app.get(`/api/v1/test/ruaylotto`, RUAYLOTTO);
+
 
 app.listen(PORT, () => {
     console.log('Start server at port '+ PORT)
